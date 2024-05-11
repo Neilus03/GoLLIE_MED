@@ -2,6 +2,8 @@ from typing import List
 
 from src.tasks.utils_typing import dataclass
 from src.tasks.utils_typing import Generic as Template
+from dataclasses import dataclass, field
+
 
 """
 Entity definitions
@@ -9,41 +11,64 @@ Entity definitions
 
 
 @dataclass
-class Launcher(Template):
-    """Refers to a vehicle designed primarily to transport payloads from the Earth's 
-    surface to space. Launchers can carry various payloads, including satellites, 
-    crewed spacecraft, and cargo, into various orbits or even beyond Earth's orbit. 
-    They are usually multi-stage vehicles that use rocket engines for propulsion."""
-
-    mention: str  
-    """
-    The name of the launcher vehicle. 
-    Such as: "Sturn V", "Atlas V", "Soyuz", "Ariane 5"
-    """
-    space_company: str # The company that operates the launcher. Such as: "Blue origin", "ESA", "Boeing", "ISRO", "Northrop Grumman", "Arianespace"
-    crew: List[str] # Names of the crew members boarding the Launcher. Such as: "Neil Armstrong", "Michael Collins", "Buzz Aldrin"
-    
-
-@dataclass
-class Mission(Template):
-    """Any planned or accomplished journey beyond Earth's atmosphere with specific objectives, 
-    either crewed or uncrewed. It includes missions to satellites, the International 
-    Space Station (ISS), other celestial bodies, and deep space."""
+class Medication(Template):
+    """Refers to a drug or substance used to diagnose, cure, treat, or prevent disease.
+    Medications can be administered in various forms and dosages and are crucial 
+    in managing patient health conditions. They can be classified based on their 
+    therapeutic use, mechanism of action, or chemical characteristics."""
     
     mention: str
     """
-    The name of the mission. 
-    Such as: "Apollo 11", "Artemis", "Mercury"
+    The name of the medication.
+    Such as: "Aspirina", "Ibuprofeno", "Aspirina".
     """
-    date: str # The start date of the mission
-    departure: str # The place from which the vehicle will be launched. Such as: "Florida", "Houston", "French Guiana"
-    destination: str # The place or planet to which the launcher will be sent. Such as "Moon", "low-orbit", "Saturn"
-
-
-ENTITY_DEFINITIONS: List[Template] = [
-    Launcher,
-    Mission,
-]
+    dosage: str # The amount and frequency at which the medication is prescribed. Such as: "100 mg al día", "200 mg dos veces al día"
+    route: str # The method of administration for the medication. Such as: "oral", "intravenoso", "tópico"
+    purpose: List[str]  # List of reasons or conditions for which the medication is prescribed. Such as: ["dolor", "control de azúcar en la sangre", "inflamación"]
     
-if __name__ == "__main__":
-    cell_txt = In[-1]
+
+@dataclass
+class Ilness(Template):
+    """Refers to a health condition or disease that affects the body's normal functioning.
+    Illnesses can be caused by various factors, such as infections, genetic disorders,
+    lifestyle choices, or environmental factors. They can affect different body systems
+    and have varying degrees of severity."""
+    
+    mention: str
+    """
+    The name of the illness or health condition.
+    Such as: "diabetes", "cáncer", "hipertensión".
+    """
+    symptoms: List[str] # List of signs or symptoms associated with the illness. Such as: ["dolor de cabeza", "fatiga", "fiebre"]
+    treatment: List[str] # List of treatments or interventions used to manage the illness. Such as: ["medicamentos", "cirugía", "terapia física"]
+
+
+@dataclass
+class HospitalizationData:
+    """Refers to information related to a patient's hospitalization, including the
+    admission date, discharge date, and reason for hospitalization. Hospitalization
+    data is essential for tracking patient health status, treatment progress, and
+    healthcare resource utilization."""
+    
+    admission_date: str #The date on which the patient was admitted to the hospital.
+    discharge_date: str #The date on which the patient was discharged from the hospital.
+    reason: str #the reason or cause for the patient's hospitalization.
+    
+    
+@dataclass
+class PatientData:
+    """Refers to information related to a patient's medical history, including
+    name, age or urgency. Patient data is essential for healthcare providers 
+    to provide appropriate care and make informed decisions about patient management."""
+    
+    name: str #The name of the patient.
+    age: int #The age of the patient.
+    urgency: str #The urgency level of the patient's condition.
+    
+    
+    
+ENTITY_DEFINITIONS: List[Template] = [
+    Medication,
+    Ilness,
+    HospitalizationData,
+]
