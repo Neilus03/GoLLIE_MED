@@ -61,7 +61,7 @@ class PatientData:
     name, age or urgency. Patient data is essential for healthcare providers 
     to provide appropriate care and make informed decisions about patient management."""
     
-    name: str #The name of the patient.
+    name: str #The name and surname of the patient.
     age: int #The age of the patient.
     urgency: str #The urgency level of the patient's condition.
     
@@ -71,4 +71,5 @@ ENTITY_DEFINITIONS: List[Template] = [
     Medication,
     Ilness,
     HospitalizationData,
+    PatientData
 ]
