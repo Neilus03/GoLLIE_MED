@@ -21,6 +21,17 @@ import tempfile
 from src.tasks.utils_typing import AnnotationList
 logging.basicConfig(level=logging.INFO)
 from typing import Dict, List, Type
+import os
+import torch
+
+
+#os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
+print("CUDA Available: ", torch.cuda.is_available())
+print("Number of GPUs: ", torch.cuda.device_count())
+
 
 # %% [markdown]
 # ## Load GoLLIE
@@ -44,6 +55,7 @@ model, tokenizer = load_model(
     use_flash_attention=True,
     torch_dtype="bfloat16"
 )
+
 
 # %% [markdown]
 # ## Define the guidelines
@@ -228,8 +240,7 @@ ENTITY_DEFINITIONS: List[Template] = [
 with open("guidelines.py","w",encoding="utf8") as python_guidelines:
     print(cell_txt,file=python_guidelines)
 
-from guidelines import *    ### Print the guidelines to guidelines.py
-
+from guidelines import *
 
 # %% [markdown]
 # We use inspect.getsource to get the guidelines as a string
@@ -255,7 +266,7 @@ data[0]
 
 # %%
 text = data[0]['Text']
-print(len(text))
+print(f"Length of the first text in the dataset: {len(text)}")
 gold = []
 
 # %% [markdown]
@@ -328,6 +339,7 @@ model_input = tokenizer(prompt, add_special_tokens=True, return_tensors="pt")
 # Remove the `eos` token from the input
 
 # %%
+
 model_input["input_ids"] = model_input["input_ids"][:, :-1]
 model_input["attention_mask"] = model_input["attention_mask"][:, :-1]
 
@@ -338,22 +350,6 @@ model_input["attention_mask"] = model_input["attention_mask"][:, :-1]
 # 
 # We use `num_beams=1` and `do_sample=False` in our exmperiments. But feel free to experiment with differen decoding strategies 😊
 
-# %%
-import torch
-print("CUDA Available: ", torch.cuda.is_available())
-print("Number of GPUs: ", torch.cuda.device_count())
-if torch.cuda.is_available():
-    print("GPU Name:", torch.cuda.get_device_name(0))
-
-
-# %%
-
-
-
-import torch
-print(torch.cuda.device_count())
-print(torch.cuda.get_device_name(1))  # Check if device 1 is available
-device = "cuda:1" if torch.cuda.is_available() else "cpu"
 
 model_ouput = model.generate(
     **model_input.to(model.device),
@@ -370,8 +366,9 @@ model_ouput = model.generate(
 
 # %%
 for y, x in enumerate(model_ouput):
-    print(f"Answer {y}")
-    rich.print(tokenizer.decode(x,skip_special_tokens=True).split("result = ")[-1])
+    print(f"Answer: {x}")
+    #print("RES1",tokenizer.decode(x,skip_special_tokens=False))
+    rich.print(tokenizer.decode(y,skip_special_tokens=True).split("result = ")[-1])
 
 # %% [markdown]
 # ## Parse the output
@@ -380,17 +377,19 @@ for y, x in enumerate(model_ouput):
 # 
 # We define the AnnotationList class to parse the output with a single line of code. The `AnnotationList.from_output` function filters any label that we did not define (hallucinations) to prevent getting an `undefined class` error. 
 
+print("model output:", model_ouput)
+#print("Tokenized output ", tokenizer.decode(torch.squeeze(model_ouput)))
 # %% [markdown]
-# result = AnnotationList.from_output(
-#     tokenizer.decode(model_ouput[0],skip_special_tokens=True).split("result = ")[-1],
-#     task_module="guidelines"
-#     )
-# rich.print(result)
+result = AnnotationList.from_output(
+    tokenizer.decode(model_ouput, skip_special_tokens=True).split("result = ")[-1],
+    task_module="guidelines"
+    )
+
+print("RESULT")
+print(result)
 
 # %%
-type(result[0])
+print(type(result))
 
 # %%
 result[0].mention
-
-

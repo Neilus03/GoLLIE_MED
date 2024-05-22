@@ -116,7 +116,9 @@ ENTITY_DEFINITIONS: List[Template] = [
 guidelines = [inspect.getsource(definition) for definition in ENTITY_DEFINITIONS]
 
 # Define input text (replace this with your actual text)
-text = "The patient was diagnosed with diabetes and was prescribed Metformin 500 mg orally once a day to control blood sugar levels. He has been experiencing symptoms such as fatigue, increased thirst, and frequent urination. The patient was hospitalized on 2022-01-15 due to hyperglycemia and was discharged on 2022-01-20 after treatment with insulin therapy. His name is John Doe, he is 45 years old, and his condition is urgent."
+text = """
+El paciente fue ingresado al hospital el 15 de enero de 2022 con un cuadro de dolor abdominal intenso que acabó en cancer de colon, sus sintomas son dolor de ovario, el tratamiento será con quimioterapia.
+"""
 
 # Define the template for the prompt
 template_txt = (
